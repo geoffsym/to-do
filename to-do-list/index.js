@@ -18,24 +18,22 @@ function addToList(list, text) {
 }
 
 function setItemDone(list, index, isDone) {
-    if (isDone) {   
+    if (isDone) {
         list[index].done = true;
     } else {
         list[index].done = false;
     }
 }
 
-
-app.use(express.static("public"))
-app.use(express.urlencoded( {extended: true }))
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-    res.redirect("/personal")
+    res.redirect("/personal");
 });
 
-
 app.get("/personal", (req, res) => {
-    res.render("index.ejs", { 
+    res.render("index.ejs", {
         listType: "personal",
         list: personal
     });
@@ -48,9 +46,8 @@ app.post("/personal", (req, res) => {
 
 app.post("/personal/add", (req, res) => {
     addToList(personal, req.body.itemText);
-    res.redirect("back")
+    res.redirect("back");
 });
-
 
 app.get("/work", (req, res) => {
     res.render("index.ejs", {
@@ -66,9 +63,8 @@ app.post("/work", (req, res) => {
 
 app.post("/work/add", (req, res) => {
     addToList(work, req.body.itemText);
-    res.redirect("back")
+    res.redirect("back");
 });
-
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);

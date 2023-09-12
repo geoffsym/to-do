@@ -1,16 +1,16 @@
 {
-  "name": "to-do",
-  "version": "1.0.0",
-  "description": "A simple to-do list app",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Geoff Symonds",
-  "license": "ISC",
-  "dependencies": {
-    "ejs": "^3.1.9",
-    "express": "^4.18.2"
-  }
+    "name": "to-do",
+    "version": "1.0.0",
+    "description": "A simple to-do list app",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Geoff Symonds",
+    "license": "ISC",
+    "dependencies": {
+        "ejs": "^3.1.9",
+        "express": "^4.18.2"
+    }
 }
