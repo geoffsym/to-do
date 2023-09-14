@@ -12,55 +12,85 @@ const itemSchema = {
 
 const Item = mongoose.model("Item", itemSchema);
 
+const listSchema = {
+    title: String,
+    items: [itemSchema]
+};
+
+const List = mongoose.model("List", listSchema);
+
+const item1 = new Item({
+    name: "Welcome to your to-do list!"
+});
+const item2 = new Item({
+    name: "Check items off the list to delete them"
+});
+const item3 = new Item({
+    name: "Add your own items below 👇"
+});
+const defaultItems = [item1, item2, item3];
+
 const app = express();
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-app.get("/", async (req, res) => {
-    if (!(await Item.exists())) {
-        const item1 = new Item({
-            name: "Welcome to your to-do list!"
-        });
-        const item2 = new Item({
-            name: "Check items off the list to delete them"
-        });
-        const item3 = new Item({
-            name: "Add your own items below 👇"
-        });
-        const defaultItems = [item1, item2, item3];
-
-        Item.insertMany(defaultItems)
-            .then(console.log("Default items added to DB"))
-            .catch((err) => {
-                if (err) console.log("Error adding default items to DB");
+app.get("/", (req, res) => {
+    Item.find().then((items) => {
+        if (items.length > 0) {
+            res.render("list", {
+                listTitle: "Today",
+                newListItems: items
             });
+        } else {
+            Item.insertMany(defaultItems).then(res.redirect("/"));
+        }
+    });
+});
 
-        res.render("list", { listTitle: "Today", newListItems: defaultItems });
-    } else {
-        const items = await Item.find();
-        res.render("list", { listTitle: "Today", newListItems: items });
-    }
+app.get("/:listTitle", (req, res) => {
+    List.findOne({ title: req.params.listTitle }).then((list) => {
+        if (list) {
+            res.render("list", {
+                listTitle: list.title,
+                newListItems: list.items
+            });
+        } else {
+            const newList = new List({
+                title: req.params.listTitle,
+                items: defaultItems
+            });
+            console.log(`Saving new list: ${newList.title}`);
+            newList.save().then(res.redirect(`/${req.params.listTitle}`));
+        }
+    });
 });
 
 app.post("/", (req, res) => {
-    if (!req.body.itemName) {
-        res.redirect("/");
-    } else if (req.body.list === "Work") {
-        workItems.push(item);
-        res.redirect("/work");
+    const newItem = new Item({
+        name: req.body.itemName
+    });
+    if (req.body.listTitle === "Today") {
+        if (!newItem.name) {
+            res.redirect("/");
+        } else {
+            newItem.save().then(res.redirect("/"));
+        }
     } else {
-        const item = new Item({
-            name: req.body.itemName
-        });
-        item.save();
-        res.redirect("/");
+        if (!newItem.name) {
+            res.redirect(`/${req.body.listTitle}`);
+        } else {
+            List.findOne({ title: req.body.listTitle }).then((list) => {
+                list.items.push(newItem);
+                list.save().then(res.redirect(`/${list.title}`));
+            });
+        }
     }
 });
 
-app.get("/work", (req, res) => {
-    res.render("list", { listTitle: "Work List", newListItems: workItems });
+app.post("/delete", (req, res) => {
+    Item.findByIdAndDelete(req.body.item_id).then(res.redirect("/"));
 });
 
 app.get("/about", (req, res) => {

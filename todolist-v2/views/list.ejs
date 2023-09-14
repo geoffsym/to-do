@@ -7,17 +7,17 @@
 <div class="box">
 
   <% newListItems.forEach(item => { %>
-  <form>
+  <form action="/delete" method="post">
     <div class="item">
-      <input type="checkbox">
-      <p><%=  item.name  %></p>
+      <input type="checkbox" name="item_id" value="<%= item._id %>" onchange="this.form.submit()">
+      <p><%= item.name %></p>
     </div>
   </form>
   <% }) %>
 
-  <form class="newtem" action="/" method="post">
+  <form class="item" action="/" method="post">
     <input type="text" name="itemName" placeholder="New Item" autocomplete="off">
-    <button type="submit" name="list">+</button>
+    <button type="submit" name="listTitle" value="<%= listTitle %>">+</button>
   </form>
 
 </div>
