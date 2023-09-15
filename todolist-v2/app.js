@@ -20,10 +20,10 @@ const listSchema = {
 const List = mongoose.model("List", listSchema);
 
 const item1 = new Item({
-    name: "Welcome to your to-do list!"
+    name: "Welcome to your new list!"
 });
 const item2 = new Item({
-    name: "Check items off the list to delete them"
+    name: "Delete an item by checking it off"
 });
 const item3 = new Item({
     name: "Add your own items below 👇"
@@ -57,7 +57,7 @@ app.get("/:listTitle", (req, res) => {
                 newListItems: list.items
             });
         } else {
-            const newList = new List({
+            let newList = new List({
                 title: req.params.listTitle,
                 items: defaultItems
             });
@@ -68,7 +68,7 @@ app.get("/:listTitle", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-    const newItem = new Item({
+    let newItem = new Item({
         name: req.body.itemName
     });
     if (req.body.listTitle === "Today") {
@@ -82,6 +82,7 @@ app.post("/", (req, res) => {
             res.redirect(`/${req.body.listTitle}`);
         } else {
             List.findOne({ title: req.body.listTitle }).then((list) => {
+                console.log(newItem);
                 list.items.push(newItem);
                 list.save().then(res.redirect(`/${list.title}`));
             });
@@ -90,7 +91,14 @@ app.post("/", (req, res) => {
 });
 
 app.post("/delete", (req, res) => {
-    Item.findByIdAndDelete(req.body.item_id).then(res.redirect("/"));
+    if (req.body.listTitle === "Today") {
+        Item.findByIdAndDelete(req.body.item_id).then(res.redirect("/"));
+    } else {
+        List.findOneAndUpdate(
+            { title: req.body.listTitle },
+            { $pull: { items: { _id: req.body.item_id } } }
+        ).then(res.redirect(`/${req.body.listTitle}`));
+    }
 });
 
 app.get("/about", (req, res) => {
