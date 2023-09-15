@@ -3,6 +3,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
+import _ from "lodash";
 
 mongoose.connect("mongodb://localhost:27017/todolistDB");
 
@@ -44,25 +45,28 @@ app.get("/", (req, res) => {
                 newListItems: items
             });
         } else {
+            console.log("Adding default items to root list");
             Item.insertMany(defaultItems).then(res.redirect("/"));
         }
     });
 });
 
 app.get("/:listTitle", (req, res) => {
-    List.findOne({ title: req.params.listTitle }).then((list) => {
+    const customListTitle = _.capitalize(req.params.listTitle);
+
+    List.findOne({ title: customListTitle }).then((list) => {
         if (list) {
             res.render("list", {
-                listTitle: list.title,
+                listTitle: customListTitle,
                 newListItems: list.items
             });
         } else {
             let newList = new List({
-                title: req.params.listTitle,
+                title: customListTitle,
                 items: defaultItems
             });
-            console.log(`Saving new list: ${newList.title}`);
-            newList.save().then(res.redirect(`/${req.params.listTitle}`));
+            console.log(`Saving new list: ${customListTitle}`);
+            newList.save().then(res.redirect(`/${customListTitle}`));
         }
     });
 });
@@ -81,11 +85,10 @@ app.post("/", (req, res) => {
         if (!newItem.name) {
             res.redirect(`/${req.body.listTitle}`);
         } else {
-            List.findOne({ title: req.body.listTitle }).then((list) => {
-                console.log(newItem);
-                list.items.push(newItem);
-                list.save().then(res.redirect(`/${list.title}`));
-            });
+            List.findOneAndUpdate(
+                { title: req.body.listTitle },
+                { $push: { items: newItem } }
+            ).then(res.redirect(`/${req.body.listTitle}`));
         }
     }
 });
