@@ -4,7 +4,9 @@ import express from "express";
 import mongoose from "mongoose";
 import _ from "lodash";
 
-mongoose.connect("mongodb://localhost:27017/todolistDB");
+mongoose.connect(
+    "mongodb+srv://geoff:test1234@cluster0.z9z9oxm.mongodb.net/todolistDB?retryWrites=true&w=majority"
+);
 
 const itemSchema = {
     name: String
