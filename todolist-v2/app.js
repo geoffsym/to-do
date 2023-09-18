@@ -1,7 +1,6 @@
 //jshint esversion:6
 
 import express from "express";
-import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import _ from "lodash";
 
@@ -34,7 +33,7 @@ const defaultItems = [item1, item2, item3];
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
