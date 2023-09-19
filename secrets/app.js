@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import encrypt from "mongoose-encryption";
+import sha256 from "crypto-js/sha256.js";
 
 mongoose.connect("mongodb://localhost:27017/userDB");
 
@@ -33,7 +34,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
     const newUser = new User({
         email: req.body.username,
-        password: req.body.password
+        password: sha256(req.body.password)
     });
 
     newUser.save().then(() => {
@@ -48,7 +49,7 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
     User.findOne({ email: req.body.username }).then((foundUser) => {
-        if (foundUser.password === req.body.password) {
+        if (foundUser.password === sha256(req.body.password)) {
             res.render("secrets");
         } else {
             res.render("home");
