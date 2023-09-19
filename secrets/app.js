@@ -3,7 +3,9 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import encrypt from "mongoose-encryption";
-import sha256 from "crypto-js/sha256.js";
+import bcrypt from "bcrypt";
+
+const saltRounds = 10;
 
 mongoose.connect("mongodb://localhost:27017/userDB");
 
@@ -32,14 +34,16 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-    const newUser = new User({
-        email: req.body.username,
-        password: sha256(req.body.password)
-    });
+    bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+        const newUser = new User({
+            email: req.body.username,
+            password: hash
+        });
 
-    newUser.save().then(() => {
-        console.log(`${newUser.email} added as new user`);
-        res.render("secrets");
+        newUser.save().then(() => {
+            console.log(`${newUser.email} added as new user`);
+            res.render("secrets");
+        });
     });
 });
 
@@ -49,10 +53,17 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
     User.findOne({ email: req.body.username }).then((foundUser) => {
-        if (foundUser.password === sha256(req.body.password)) {
-            res.render("secrets");
+        if (foundUser) {
+            bcrypt.compare(
+                req.body.password,
+                foundUser.password,
+                (err, result) => {
+                    if (result === true) res.render("secrets");
+                    else res.render("login");
+                }
+            );
         } else {
-            res.render("home");
+            res.render("login");
         }
     });
 });
