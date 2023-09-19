@@ -1,11 +1,12 @@
 //jshint esversion:6
 
 import express from "express";
-import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import _ from "lodash";
 
-mongoose.connect("mongodb://localhost:27017/todolistDB");
+mongoose.connect(
+    "mongodb+srv://geoff:test1234@cluster0.z9z9oxm.mongodb.net/todolistDB?retryWrites=true&w=majority"
+);
 
 const itemSchema = {
     name: String
@@ -34,7 +35,7 @@ const defaultItems = [item1, item2, item3];
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
