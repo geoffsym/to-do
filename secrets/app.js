@@ -1,14 +1,19 @@
 //jshint esversion:6
+import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
+import encrypt from "mongoose-encryption";
 
 mongoose.connect("mongodb://localhost:27017/userDB");
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
     email: String,
     password: String
-};
-
+});
+userSchema.plugin(encrypt, {
+    secret: process.env.SECRET,
+    encryptedFields: ["password"]
+});
 const User = mongoose.model("User", userSchema);
 
 const app = express();
@@ -19,20 +24,6 @@ app.use(express.static("public"));
 
 app.get("/", (req, res) => {
     res.render("home");
-});
-
-app.get("/login", (req, res) => {
-    res.render("login");
-});
-
-app.post("/login", (req, res) => {
-    User.findOne({ email: req.body.username }).then((foundUser) => {
-        if (foundUser.password === req.body.password) {
-            res.render("secrets");
-        } else {
-            res.render("home");
-        }
-    });
 });
 
 app.get("/register", (req, res) => {
@@ -48,6 +39,20 @@ app.post("/register", (req, res) => {
     newUser.save().then(() => {
         console.log(`${newUser.email} added as new user`);
         res.render("secrets");
+    });
+});
+
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/login", (req, res) => {
+    User.findOne({ email: req.body.username }).then((foundUser) => {
+        if (foundUser.password === req.body.password) {
+            res.render("secrets");
+        } else {
+            res.render("home");
+        }
     });
 });
 
