@@ -61,21 +61,19 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
-app.post("/login", (req, res) => {
-    passport.authenticate("local")(req, res, () => {
-        const user = new User({
-            username: req.body.username,
-            password: req.body.password
-        });
+app.post("/login", passport.authenticate("local"), (req, res) => {
+    const user = new User({
+        username: req.body.username,
+        password: req.body.password
+    });
 
-        req.login(user, (err) => {
-            if (err) {
-                console.log(err);
-                res.redirect("/login");
-            } else {
-                res.redirect("/secrets");
-            }
-        });
+    req.login(user, (err) => {
+        if (err) {
+            console.log(err);
+            res.redirect("/login");
+        } else {
+            res.redirect("/secrets");
+        }
     });
 });
 
