@@ -9,8 +9,8 @@ import GoogleStrategy from "passport-google-oauth20";
 import findOrCreate from "mongoose-findorcreate";
 
 // need this to make it work on Paychex network
-// import https from "https";
-// https.globalAgent.options.rejectUnauthorized = false;
+import https from "https";
+https.globalAgent.options.rejectUnauthorized = false;
 
 const app = express();
 
@@ -34,7 +34,8 @@ mongoose.connect("mongodb://localhost:27017/userDB");
 const userSchema = new mongoose.Schema({
     username: String,
     password: String,
-    googleId: String
+    googleId: String,
+    secret: String
 });
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
@@ -48,8 +49,8 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(function (id, done) {
     User.findById(id)
-        .then(function (user) {
-            done(null, user);
+        .then(function (foundUser) {
+            done(null, foundUser);
         })
         .catch(function (err) {
             done(err, null);
@@ -64,9 +65,8 @@ passport.use(
             callbackURL: "http://localhost:3000/auth/google/secrets"
         },
         (accessToken, refreshToken, profile, cb) => {
-            console.log(profile);
-            User.findOrCreate({ googleId: profile.id }, function (err, user) {
-                return cb(err, user);
+            User.findOrCreate({ googleId: profile.id }, (err, foundUser) => {
+                return cb(err, foundUser);
             });
         }
     )
@@ -130,11 +130,26 @@ app.get(
 );
 
 app.get("/secrets", (req, res) => {
+    User.find({ secret: { $ne: null } }).then((foundUsers) => {
+        if (foundUsers) {
+            res.render("secrets", { usersWithSecrets: foundUsers });
+        }
+    });
+});
+
+app.get("/submit", (req, res) => {
     if (req.isAuthenticated()) {
-        res.render("secrets");
+        res.render("submit");
     } else {
         res.redirect("/login");
     }
+});
+
+app.post("/submit", (req, res) => {
+    User.findById(req.user.id).then((foundUser) => {
+        foundUser.secret = req.body.secret;
+        foundUser.save().then(res.redirect("/secrets"));
+    });
 });
 
 app.get("/logout", (req, res) => {
