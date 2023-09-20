@@ -1,0 +1,13 @@
+version: "3"
+services:
+    node:
+        container_name: to-do
+        hostname: to-do
+        image: node:latest
+        restart: unless-stopped
+        ports:
+            - "8085:8085"
+        volumes:
+            - ./:/home/node/app
+        working_dir: /home/node/app
+        command: "npm start"
