@@ -6,8 +6,8 @@ services:
         image: node:latest
         restart: unless-stopped
         ports:
-            - "8085:8085"
+            - "8085:3000"
         volumes:
             - ./:/home/node/app
         working_dir: /home/node/app
-        command: "npm start"
+        command: "npm run start"
