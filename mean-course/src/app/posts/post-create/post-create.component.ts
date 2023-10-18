@@ -4,4 +4,10 @@ import { Component } from '@angular/core';
   selector: 'app-post-create',
   templateUrl: './post-create.component.html',
 })
-export class PostCreateComponent {}
+export class PostCreateComponent {
+  newPost = 'NO CONTENT';
+
+  onAddPost() {
+    this.newPost = "The user's post";
+  }
+}
