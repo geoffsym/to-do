@@ -1,6 +1,10 @@
 mat-card {
-  margin: auto;
   padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+mat-form-field {
+  display: block;
 }
 
 button {
