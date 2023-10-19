@@ -2,3 +2,9 @@ mat-card {
   width: 80%;
   margin: auto;
 }
+
+button {
+  width: auto;
+  margin: auto;
+  margin-bottom: 1rem;
+}
