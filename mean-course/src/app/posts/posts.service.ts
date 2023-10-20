@@ -43,7 +43,6 @@ export class PostsService {
       .post<{ message: string; postId: string }>(apiUrl, post)
       .subscribe((responseData) => {
         post.id = responseData.postId;
-        console.log(post.id);
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
