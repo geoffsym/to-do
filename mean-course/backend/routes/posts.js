@@ -50,17 +50,29 @@ router.post(
   }
 );
 
-router.put("/:id", (req, res, next) => {
-  const post = new Post({
-    id: req.body.id,
-    title: req.body.title,
-    content: req.body.content,
-  });
-  Post.updateOne({ _id: req.params.id }, post).then((result) => {
-    console.log(result);
-    res.status(200).json({ message: "Update seccessful!" });
-  });
-});
+router.put(
+  "/:id",
+  multer({ storage: storage }).single("image"),
+  (req, res, next) => {
+    let imagePath;
+    if (req.file) {
+      const url = req.protocol + "://" + req.get("host");
+      imagePath = url + "/images/" + req.file.filename;
+    } else {
+      imagePath = req.body.imagePath;
+    }
+    const post = new Post({
+      id: req.body.id,
+      title: req.body.title,
+      content: req.body.content,
+      imagePath: imagePath,
+    });
+    Post.updateOne({ _id: req.params.id }, post).then((result) => {
+      console.log(result);
+      res.status(200).json({ message: "Update seccessful!" });
+    });
+  }
+);
 
 router.get("/", (req, res, next) => {
   Post.find().then((posts) => {

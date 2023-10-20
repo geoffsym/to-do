@@ -36,9 +36,12 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return this.http.get<{ _id: string; title: string; content: string }>(
-      apiUrl + id
-    );
+    return this.http.get<{
+      _id: string;
+      title: string;
+      content: string;
+      imagePath: string;
+    }>(apiUrl + id);
   }
 
   addPost(title: string, content: string, image: File) {
@@ -61,16 +64,31 @@ export class PostsService {
       });
   }
 
-  updatePost(id: string, title: string, content: string) {
-    const post: Post = {
-      id: id,
-      title: title,
-      content: content,
-      imagePath: null,
-    };
-    this.http.put(apiUrl + id, post).subscribe((response) => {
+  updatePost(id: string, title: string, content: string, image: File | string) {
+    let postData: FormData | Post;
+    if (typeof image === 'object') {
+      postData = new FormData();
+      postData.append('id', id);
+      postData.append('title', title);
+      postData.append('content', content);
+      postData.append('image', image, title);
+    } else {
+      postData = {
+        id: id,
+        title: title,
+        content: content,
+        imagePath: image,
+      };
+    }
+    this.http.put(apiUrl + id, postData).subscribe((response) => {
       const updatedPosts = [...this.posts];
-      const oldPostIndex = updatedPosts.findIndex((p) => p.id === post.id);
+      const oldPostIndex = updatedPosts.findIndex((p) => p.id === id);
+      const post: Post = {
+        id: id,
+        title: title,
+        content: content,
+        imagePath: '',
+      };
       updatedPosts[oldPostIndex] = post;
       this.posts = updatedPosts;
       this.postsUpdated.next([...this.posts]);
