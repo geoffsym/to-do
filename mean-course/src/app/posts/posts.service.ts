@@ -40,9 +40,10 @@ export class PostsService {
   addPost(title: string, content: string) {
     const post: Post = { id: null, title: title, content: content };
     this.http
-      .post<{ message: string }>(apiUrl, post)
+      .post<{ message: string; postId: string }>(apiUrl, post)
       .subscribe((responseData) => {
-        console.log(responseData.message);
+        post.id = responseData.postId;
+        console.log(post.id);
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
