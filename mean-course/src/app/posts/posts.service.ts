@@ -48,6 +48,13 @@ export class PostsService {
       });
   }
 
+  updatePost(id: string, title: string, content: string) {
+    const post: Post = { id: id, title: title, content: content };
+    this.http
+      .put(apiUrl + id, post)
+      .subscribe((response) => console.log(response));
+  }
+
   deletePost(postId: string) {
     this.http.delete(apiUrl + postId).subscribe(() => {
       this.posts = this.posts.filter((post) => post.id !== postId);
