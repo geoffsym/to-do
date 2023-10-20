@@ -12,17 +12,18 @@ import { Subscription } from 'rxjs';
 })
 export class PostListComponent implements OnDestroy, OnInit {
   public isLoading = false;
-  public posts: Post[] = [];
-  public totalPosts = 10;
-  public postsPerPage = 2;
   public pageSizeOptions = [1, 2, 5, 10];
+  public postsPerPage = 10;
+  public currentPage = 1;
+  public totalPosts = 10;
+  public posts: Post[] = [];
   private postsSub: Subscription;
 
   constructor(public postsService: PostsService) {}
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.postsService.getPosts();
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.postsSub = this.postsService
       .getPostUpdatedListener()
       .subscribe((posts: Post[]) => {
@@ -32,7 +33,9 @@ export class PostListComponent implements OnDestroy, OnInit {
   }
 
   onChagedPage(pageData: PageEvent) {
-    
+    this.currentPage = pageData.pageIndex + 1;
+    this.postsPerPage = pageData.pageSize;
+    this.postsService.getPosts(this.postsPerPage, this.currentPage);
   }
 
   onDelete(postId: string) {
