@@ -3,6 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
+import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -22,6 +23,7 @@ import { PostListComponent } from './posts/post-list/post-list.component';
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
+    HttpClientModule,
     FormsModule,
     MatButtonModule,
     MatCardModule,
