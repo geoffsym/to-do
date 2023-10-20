@@ -33,8 +33,8 @@ export class PostsService {
       });
   }
 
-  getPostUpdatedListener() {
-    return this.postsUpdated.asObservable();
+  getPost(id: string) {
+    return { ...this.posts.find((p) => p.id === id) };
   }
 
   addPost(title: string, content: string) {
@@ -53,5 +53,9 @@ export class PostsService {
       this.posts = this.posts.filter((post) => post.id !== postId);
       this.postsUpdated.next([...this.posts]);
     });
+  }
+
+  getPostUpdatedListener() {
+    return this.postsUpdated.asObservable();
   }
 }
