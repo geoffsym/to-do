@@ -13,9 +13,9 @@ import { PostsService } from '../posts.service';
 export class PostCreateComponent implements OnInit {
   public enteredTitle = '';
   public enteredContent = '';
+  public post: Post;
   private mode: string;
   private postId: string;
-  public post: Post;
 
   constructor(
     public postsService: PostsService,
@@ -27,7 +27,14 @@ export class PostCreateComponent implements OnInit {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
         this.postId = paramMap.get('postId');
-        this.post = this.postsService.getPost(this.postId);
+        this.postsService.getPost(this.postId).subscribe((postData) => {
+          this.post = {
+            id: postData._id,
+            title: postData.title,
+            content: postData.content,
+          };
+          console.log(this.post);
+        });
       } else {
         this.mode = 'create';
         this.postId = null;
