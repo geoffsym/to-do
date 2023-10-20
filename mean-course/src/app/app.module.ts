@@ -17,6 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgModule } from '@angular/core';
 import { PostCreateComponent } from './posts/post-create/post-create.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
+import { SignupComponent } from './auth/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { PostListComponent } from './posts/post-list/post-list.component';
     LoginComponent,
     PostCreateComponent,
     PostListComponent,
+    SignupComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -32,7 +34,6 @@ import { PostListComponent } from './posts/post-list/post-list.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
     MatExpansionModule,
@@ -40,6 +41,7 @@ import { PostListComponent } from './posts/post-list/post-list.component';
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
