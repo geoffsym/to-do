@@ -11,10 +11,6 @@ mat-form-field {
   display: block;
 }
 
-button {
-  width: max-content;
-}
-
 input[type="file"] {
   visibility: hidden;
 }
