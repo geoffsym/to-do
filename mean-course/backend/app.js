@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
 import express from "express";
 import mongoose from "mongoose";
+import path from "path";
 import postRouter from "./routes/posts.js";
 
 dotenvExpand.expand(dotenv.config());
@@ -18,6 +19,7 @@ mongoose
 const app = express();
 
 app.use(express.json());
+app.use("/images", express.static(path.join("backend/images")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
