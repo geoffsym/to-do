@@ -1,5 +1,20 @@
 import Post from "./models/post.js";
+import dotenv from "dotenv";
+import dotenvExpand from "dotenv-expand";
 import express from "express";
+import mongoose from "mongoose";
+
+dotenvExpand.expand(dotenv.config());
+
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => {
+    console.log("Connected to database!");
+  })
+  .catch(() => {
+    console.log("Database connection failed!");
+  });
+
 const app = express();
 
 app.use(express.json());
