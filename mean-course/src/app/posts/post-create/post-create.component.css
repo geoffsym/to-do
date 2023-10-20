@@ -14,3 +14,7 @@ mat-form-field {
 button {
   width: max-content;
 }
+
+input[type="file"] {
+  visibility: hidden;
+}
