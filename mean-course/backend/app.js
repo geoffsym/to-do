@@ -4,6 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import postRouter from "./routes/posts.js";
+import userRouter from "./routes/user.js";
 
 dotenvExpand.expand(dotenv.config());
 
@@ -35,5 +36,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", postRouter);
+app.use("/api/user", userRouter);
 
 export default app;
