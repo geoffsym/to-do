@@ -50,7 +50,10 @@ router.post("/login", (req, res, next) => {
         process.env.AUTH_SECRET,
         { expiresIn: "1h" }
       );
-      res.status(200).json({ token: token });
+      res.status(200).json({
+        token: token,
+        expiresIn: 3600,
+      });
     })
     .catch((err) => {
       res.status(401).json({ message: err.message });
