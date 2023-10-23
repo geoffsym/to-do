@@ -2,7 +2,7 @@
   <span><a routerLink="/">MyMessages</a></span>
   <span class="spacer"></span>
   <ul>
-    <li>
+    <li *ngIf="userIsAuthenticated">
       <a
         mat-button
         color="white"
@@ -12,7 +12,7 @@
         New Post
       </a>
     </li>
-    <li>
+    <li *ngIf="!userIsAuthenticated">
       <a
         mat-button
         color="white"
@@ -22,7 +22,7 @@
         Log In
       </a>
     </li>
-    <li>
+    <li *ngIf="!userIsAuthenticated">
       <a
         mat-button
         color="white"
@@ -31,6 +31,9 @@
       >
         Sign Up
       </a>
+    </li>
+    <li *ngIf="userIsAuthenticated">
+      <button mat-button color="white">Log Out</button>
     </li>
   </ul>
 </mat-toolbar>
