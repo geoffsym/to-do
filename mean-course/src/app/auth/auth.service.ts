@@ -8,10 +8,15 @@ const apiUrl = 'http://localhost:3000/api/user/';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private isAuthenticated = false;
   private token: string;
   private authStatusListener = new Subject<boolean>();
 
   constructor(private http: HttpClient) {}
+
+  getIsAuth() {
+    return this.isAuthenticated;
+  }
 
   getToken() {
     return this.token;
@@ -34,7 +39,10 @@ export class AuthService {
       .post<{ token: string }>(apiUrl + 'login', authData)
       .subscribe((response) => {
         this.token = response.token;
-        this.authStatusListener.next(true);
+        if (this.token) {
+          this.isAuthenticated = true;
+          this.authStatusListener.next(true);
+        }
       });
   }
 }
