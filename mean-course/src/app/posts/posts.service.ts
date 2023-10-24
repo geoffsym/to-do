@@ -51,6 +51,7 @@ export class PostsService {
       title: string;
       content: string;
       imagePath: string;
+      creator: string;
     }>(apiUrl + id);
   }
 
@@ -80,6 +81,7 @@ export class PostsService {
         title: title,
         content: content,
         imagePath: image,
+        creator: null,
       };
     }
     this.http.put(apiUrl + id, postData).subscribe((response) => {
