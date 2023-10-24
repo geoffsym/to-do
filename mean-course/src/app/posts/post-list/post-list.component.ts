@@ -60,8 +60,13 @@ export class PostListComponent implements OnDestroy, OnInit {
     if ((this.posts.length - 1) % this.postsPerPage === 0) {
       this.currentPage--;
     }
-    this.postsService.deletePost(postId).subscribe(() => {
-      this.postsService.getPosts(this.postsPerPage, this.currentPage);
+    this.postsService.deletePost(postId).subscribe({
+      next: () => {
+        this.postsService.getPosts(this.postsPerPage, this.currentPage);
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 
