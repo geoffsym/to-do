@@ -42,10 +42,10 @@ export class AuthService {
       .subscribe((response) => {
         this.token = response.token;
         if (this.token) {
-          const tokenDuration = response.expiresIn;
-          this.tokenTimer = setTimeout(() => {
-            this.logout();
-          }, tokenDuration * 1000);
+          const tokenSeconds = response.expiresIn;
+          this.setAuthTimer(tokenSeconds);
+          const expirationDate = new Date(Date.now() + 1000 * tokenSeconds);
+          this.saveAuthData(this.token, expirationDate);
           this.isAuthenticated = true;
           this.authStatusListener.next(true);
           this.router.navigate(['/']);
@@ -53,11 +53,51 @@ export class AuthService {
       });
   }
 
+  autoAuthUser() {
+    const authInfo = this.getAuthData();
+    const tokenSeconds =
+      (authInfo.expirationDate.getTime() - Date.now()) / 1000;
+    if (tokenSeconds > 0) {
+      this.setAuthTimer(tokenSeconds);
+      this.token = authInfo.token;
+      this.isAuthenticated = true;
+      this.authStatusListener.next(true);
+    }
+  }
+
   logout() {
     this.token = null;
     this.isAuthenticated = false;
     this.authStatusListener.next(false);
     clearTimeout(this.tokenTimer);
+    this.clearAuthData();
     this.router.navigate(['/']);
+  }
+
+  private setAuthTimer(seconds: number) {
+    console.log()
+    this.tokenTimer = setTimeout(() => {
+      this.logout();
+    }, seconds * 1000);
+  }
+
+  private saveAuthData(token: string, expirationDate: Date) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('expiration', expirationDate.toISOString());
+  }
+
+  private clearAuthData() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiration');
+  }
+
+  private getAuthData() {
+    const token = localStorage.getItem('token');
+    const expiration = localStorage.getItem('expiration');
+    if (token && expiration) {
+      return { token: token, expirationDate: new Date(expiration) };
+    } else {
+      return null;
+    }
   }
 }
