@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { Post } from './post.model';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
-const apiUrl = 'http://localhost:3000/api/posts/';
+const apiUrl = environment.apiUrl + '/posts/';
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {

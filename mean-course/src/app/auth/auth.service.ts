@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { response } from 'express';
+import { environment } from '../../environments/environment';
 
-const apiUrl = 'http://localhost:3000/api/user/';
+const apiUrl = environment.apiUrl + '/user/';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
