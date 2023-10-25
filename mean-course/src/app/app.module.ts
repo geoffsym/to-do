@@ -13,6 +13,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { NgModule } from '@angular/core';
 import { PostCreateComponent } from './posts/post-create/post-create.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
+import { PostsModule } from './posts/posts.module';
 import { SignupComponent } from './auth/signup/signup.component';
 
 @NgModule({
@@ -20,8 +21,6 @@ import { SignupComponent } from './auth/signup/signup.component';
     AppComponent,
     HeaderComponent,
     LoginComponent,
-    PostCreateComponent,
-    PostListComponent,
     SignupComponent,
   ],
   imports: [
@@ -31,7 +30,7 @@ import { SignupComponent } from './auth/signup/signup.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule,
+    PostsModule,
   ],
   providers: [
     {
