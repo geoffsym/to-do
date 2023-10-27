@@ -1,5 +1,5 @@
 import Debug from "debug";
-import app from "./backend/app.js";
+import app from "./app.js";
 import http from "http";
 
 const debug = Debug("node-angular");
